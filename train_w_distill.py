@@ -17,7 +17,7 @@ tf.app.flags.DEFINE_string('train_dir', home_path + '/test',
                            'Directory where checkpoints and event logs are written to.')
 tf.app.flags.DEFINE_string('Distillation', 'KD-EID',
                            'Distillation method : Soft_logits, FitNet, AT, FSP, DML, KD-SVD, AB, RKD')
-tf.app.flasg.DEFINE_string('teacher', 'ResNet32',
+tf.app.flags.DEFINE_string('teacher', 'ResNet32',
                            'pretrained teacher`s weights')
 tf.app.flags.DEFINE_string('main_scope', 'Student',
                            'networ`s scope')
@@ -192,8 +192,8 @@ def main(_):
             train_writer.close()
 
 def MODEL(model_name, scope, weight_decay, image, label, is_training, reuse, drop, Distillation):
-    network_fn = nets_factory.get_network_fn(model_name, weight_decay = weight_decay)
-    end_points = network_fn(image, scope, is_training=is_training, reuse=reuse, drop = drop, Distill=Distillation)
+    network_fn = nets_factory.get_network_fn(label, model_name, weight_decay = weight_decay)
+    end_points = network_fn(image, label, scope, is_training=is_training, reuse=reuse, drop = drop, Distill=Distillation)
 
     loss = tf.losses.softmax_cross_entropy(label,end_points['Logits'])
     if Distillation == 'DML':
